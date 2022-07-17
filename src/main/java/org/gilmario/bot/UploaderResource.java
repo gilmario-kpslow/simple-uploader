@@ -3,7 +3,6 @@ package org.gilmario.bot;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;

@@ -1,7 +1,7 @@
 package org.gilmario.bot;
 
+import io.quarkus.runtime.Startup;
 import java.io.IOException;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,13 +11,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.core.SecurityContext;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.eclipse.microprofile.jwt.Claim;
-import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
 /**
@@ -25,6 +24,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
  * @author gilmario
  */
 @RequestScoped
+@Startup
 public class VersaoService {
 
     @ConfigProperty(name = "paths.base", defaultValue = "versoes")
@@ -33,6 +33,12 @@ public class VersaoService {
     private String PUBLICAR;
     @Inject
     protected JsonWebToken jwt;
+
+    @PostConstruct
+    public void teste() {
+        System.err.println(BASE);
+        System.err.println(PUBLICAR);
+    }
 
     public Mensagem upload(UploadRequest request) throws IOException {
         Files.write(Paths.get(BASE, request.getVersao(), request.getNome()), Base64.getDecoder().decode(request.getConteudo()));
