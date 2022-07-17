@@ -330,7 +330,7 @@ const getInfo = () => {
 
     fetch(req).then((resp) => {
         if (resp.status !== 200) {
-            location.href = '/login';
+            location.href = '/login/index.html';
             return;
         }
         resp.json().then(d => {
