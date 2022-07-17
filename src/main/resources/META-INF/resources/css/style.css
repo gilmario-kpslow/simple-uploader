@@ -1,0 +1,16 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/CascadeStyleSheet.css to edit this template
+*/
+/*
+    Created on : 15 de jul. de 2022, 19:53:45
+    Author     : gilmario
+*/
+
+.messagem {
+
+    min-width: 250px;
+    position: fixed;
+    top: 10px;
+    right: 10px;
+}

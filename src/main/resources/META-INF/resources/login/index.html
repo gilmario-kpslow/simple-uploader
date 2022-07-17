@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <title>Simple Uploader</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="/css/login.css" rel="stylesheet">
+    </head>
+    <body class="text-center">
+
+        <div id="messagem" class="messagem"></div>
+
+        <main class="form-signin w-100 m-auto">
+            <form id="loginForm">
+                <h1 class="h3 mb-3 fw-normal">Uploader</h1>
+
+                <div class="form-floating">
+                    <input type="text" class="form-control" required id="usernameInput" placeholder="Nome de Usuário">
+                    <label for="usernameInput">Username</label>
+                </div>
+                <div class="form-floating">
+                    <input type="password" class="form-control" required id="passInput" placeholder="Password">
+                    <label for="passInput">Password</label>
+                </div>
+
+                <button class="w-100 btn btn-lg btn-primary" type="button" id="loginButton">Logar</button>
+                <p class="mt-5 mb-3 text-muted">&copy; 2022</p>
+            </form>
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
+        <script src="/js/login.js"></script>
+    </body>
+</html>
