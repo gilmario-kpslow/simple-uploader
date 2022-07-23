@@ -8,6 +8,8 @@ package org.gilmario.bot;
  *
  * @author gilmario
  */
-public class VersaoRequest {
+public enum TipoMessagem {
+
+    SUCCESS, DANGER, WARNING, PRIMARY
 
 }

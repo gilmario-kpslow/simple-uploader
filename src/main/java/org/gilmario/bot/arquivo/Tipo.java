@@ -1,4 +1,4 @@
-package org.gilmario.bot;
+package org.gilmario.bot.arquivo;
 
 /**
  *

@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.gilmario.bot;
 
 /**
@@ -12,12 +8,23 @@ public class Mensagem {
 
     private String detalhe;
     private String resumo;
-    private String tipo;
+    private TipoMessagem tipo;
 
-    public Mensagem(String detalhe, String resumo, String tipo) {
+    public Mensagem(String detalhe, String resumo, TipoMessagem tipo) {
         this.detalhe = detalhe;
         this.resumo = resumo;
         this.tipo = tipo;
+    }
+
+    public Mensagem(String detalhe, String resumo) {
+        this.detalhe = detalhe;
+        this.resumo = resumo;
+        this.tipo = TipoMessagem.SUCCESS;
+    }
+
+    public Mensagem(String detalhe) {
+        this.detalhe = detalhe;
+        this.tipo = TipoMessagem.SUCCESS;
     }
 
     public String getDetalhe() {
@@ -36,11 +43,11 @@ public class Mensagem {
         this.resumo = resumo;
     }
 
-    public String getTipo() {
+    public TipoMessagem getTipo() {
         return tipo;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(TipoMessagem tipo) {
         this.tipo = tipo;
     }
 

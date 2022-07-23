@@ -4,81 +4,94 @@
         <title>Simple Uploader</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+        <link rel="icon" href="favicon.svg" sizes="24x24" type="image/svg">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome/css/font-awesome.min.css" rel="stylesheet">
         <link href="css/style.css" rel="stylesheet">
     </head>
     <body>
         <div class="container-fluid p-5">
 
-            <div id="messagem" class="messagem">
+            <div id="loader" class="loader d-none">
+                <div class="loader-content">
+                    <i class="fa fa-refresh fa-spin fa-5x"></i>
+                    <div>Realizando upload</div>
+                </div>
 
             </div>
 
-            <div class="h1">SIMPLE UPLOADER</div>
+            <div id="messagem" class="messagem">
 
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Versões</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Nova Versão</button>
-                </li>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Versão</th>
-                                        <th scope="col">Açoes</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="versoes">
+            </div>
+            <div class="border rounded p-3">
+                <div class="h1">SIMPLE UPLOADER</div>
+            </div>
+            <hr/>
+            <div class="border rounded" style="min-height: 500px;">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Versões</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Nova Versão</button>
+                    </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Versão</th>
+                                            <th scope="col">Açoes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="versoes">
 
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                    <div class="row">
-                        <div class="col-md-4">
-                            <label class="label">Versão</label>
-                            <div class="input-group mb-3">
-                                <input type="text" id="inputVersao" class="form-control" readonly>
-                                <button type="button" id="versaoButton" class="btn btn-primary">CRIAR</button>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <label class="label">Selecione um arquivo</label>
-                            <input type="file" class="form-control d-none" multiple id="uploaderInput" name="name">
-                        </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-12">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Versão</th>
-                                        <th scope="col">Açoes</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabelaArquivos">
+                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label class="label">Versão</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" id="inputVersao" class="form-control" readonly>
+                                    <button type="button" id="versaoButton" class="btn btn-primary">CRIAR</button>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <label class="label">Selecione um arquivo</label>
+                                <input type="file" class="form-control d-none" multiple id="uploaderInput" name="name">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Versão</th>
+                                            <th scope="col">Açoes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tabelaArquivos">
 
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
         <script src="js/api.js"></script>
     </body>
 </html>

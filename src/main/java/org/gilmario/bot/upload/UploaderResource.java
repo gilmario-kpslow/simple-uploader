@@ -1,5 +1,6 @@
-package org.gilmario.bot;
+package org.gilmario.bot.upload;
 
+import org.gilmario.bot.arquivo.PathObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -9,6 +10,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -17,7 +19,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
+import org.gilmario.bot.Mensagem;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 @Path("uploader")
 @RequestScoped
@@ -25,14 +31,22 @@ import javax.ws.rs.core.SecurityContext;
 public class UploaderResource {
 
     @Inject
-    VersaoService versaoService;
+    protected VersaoService versaoService;
 
+//    @POST
+//    @Path("upload")
+//    @Produces(MediaType.APPLICATION_JSON)
+//    @Consumes(MediaType.APPLICATION_JSON)
+//    public Mensagem uploadFile(UploadRequest request) throws IOException {
+//        return versaoService.upload(request);
+//    }
     @POST
     @Path("upload")
+    @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem uploadFile(UploadRequest request) throws IOException {
-        return versaoService.upload(request);
+    public Response fileUpload(@MultipartForm MultipartFormDataInput input, @HeaderParam("versao") String versao) throws Exception {
+        return Response.ok().
+                entity(versaoService.upload(input, versao)).build();
     }
 
     @GET

@@ -1,19 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package org.gilmario.bot;
+package org.gilmario.bot.seguranca;
 
 import io.smallrye.jwt.build.Jwt;
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
