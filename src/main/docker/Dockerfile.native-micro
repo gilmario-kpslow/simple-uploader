@@ -17,12 +17,22 @@
 # docker run -i --rm -p 8080:8080 quarkus/code-with-quarkus
 #
 ###
+
+FROM maven:3.8.3-openjdk-17 as compile
+WORKDIR /work/application
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
+COPY --chown=1001:root . /work/application
+RUN --mount=type=cache,id=m2-cache,sharing=shared,target=/root/.m2 mvn clean package -Pnative -DskipTests
+RUN pwd && ls && ls target
+
 FROM quay.io/quarkus/quarkus-micro-image:1.0
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \
     && chown 1001:root /work
-COPY --chown=1001:root target/*-runner /work/application
+COPY --from=compile --chown=1001:root /work/application/target/*-runner /work/application
 
 EXPOSE 8080
 USER 1001
