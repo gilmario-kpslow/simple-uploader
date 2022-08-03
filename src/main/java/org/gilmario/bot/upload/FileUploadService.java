@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package org.gilmario.bot.upload;
 
 import java.io.File;
@@ -27,7 +23,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @Singleton
 public class FileUploadService {
 
-//    @ConfigProperty(name = "upload.directory")
     String UPLOAD_DIR;
 
     public String uploadFile(MultipartFormDataInput input) {
