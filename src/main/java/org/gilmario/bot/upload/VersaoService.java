@@ -1,20 +1,16 @@
 package org.gilmario.bot.upload;
 
-import org.gilmario.bot.arquivo.Tipo;
 import org.gilmario.bot.arquivo.PathObject;
 import io.quarkus.runtime.Startup;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -44,30 +40,25 @@ public class VersaoService {
 
     @ConfigProperty(name = "paths.base", defaultValue = "versoes")
     private String BASE;
-    @ConfigProperty(name = "paths.site", defaultValue = "site")
-    private String PUBLICAR;
+    @ConfigProperty(name = "paths.web", defaultValue = "web")
+    private String WEB;
+    @ConfigProperty(name = "paths.mobile", defaultValue = "mobile")
+    private String MOBILE;
     @Inject
     protected JsonWebToken jwt;
-
-    @PostConstruct
-    public void teste() {
-        System.err.println(BASE);
-        System.err.println(PUBLICAR);
-    }
 
     Mensagem upload(MultipartFormDataInput input, String versao) throws IOException {
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<String> fileNames = new ArrayList<>();
+//        List<String> fileNames = new ArrayList<>();
         List<InputPart> inputParts = uploadForm.get("file");
-        String fileName = null;
+//        String fileName = null;
         for (InputPart inputPart : inputParts) {
             MultivaluedMap<String, String> header
                     = inputPart.getHeaders();
-            fileName = getFileName(header);
-            fileNames.add(fileName);
+            String fileName = getFileName(header);
+//            fileNames.add(fileName);
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
-//            writeFile(inputStream, fileName);
             byte[] bytes = IOUtils.toByteArray(inputStream);
             Files.write(Paths.get(BASE, versao, fileName), bytes);
         }
@@ -87,9 +78,9 @@ public class VersaoService {
         return "";
     }
 
-    public Mensagem gerarVersao() throws IOException {
+    public Mensagem gerarVersao(String tipo) throws IOException {
         Long total = Files.list(Paths.get(BASE)).count();
-        String versao = ("Versao-" + (total + 1L));
+        String versao = ("Versao-" + (total + 1L) + "-" + tipo.toLowerCase());
         Files.createDirectories(Paths.get(BASE, versao));
         return new Mensagem("Upload realizado com sucesso", versao, TipoMessagem.SUCCESS);
     }
@@ -122,8 +113,10 @@ public class VersaoService {
 
     public Mensagem publicarVersao(String versao) throws IOException {
 
+        String publicar = versao.toLowerCase().contains("web") ? WEB : MOBILE;
+
         Path fromPath = Paths.get(BASE, versao);
-        Path destPath = Paths.get(PUBLICAR);
+        Path destPath = Paths.get(publicar);
         Files.list(destPath).forEach(f -> {
             try {
                 Files.deleteIfExists(f);
@@ -133,7 +126,7 @@ public class VersaoService {
         });
 
         Files.walk(fromPath).forEach(a -> {
-            Path b = Paths.get(PUBLICAR, a.toString().substring(fromPath.toString().length()));
+            Path b = Paths.get(publicar, a.toString().substring(fromPath.toString().length()));
             try {
                 if (!a.toString().equals(fromPath.toString())) {
                     Files.copy(a, b, StandardCopyOption.REPLACE_EXISTING);
@@ -143,12 +136,6 @@ public class VersaoService {
             }
         });
         return new Mensagem("Publicado com sucesso");
-    }
-
-    private void copySourceToDest(Path fromPath, Path source) throws IOException {
-        Path destination = Paths.get(PUBLICAR, source.toString().substring(fromPath.toString().length()));
-        Files.copy(fromPath, destination);
-
     }
 
     public List<PathObject> listarArquivos(Optional<String> arvore) throws IOException {

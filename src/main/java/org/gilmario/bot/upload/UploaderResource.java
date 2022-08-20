@@ -33,13 +33,6 @@ public class UploaderResource {
     @Inject
     protected VersaoService versaoService;
 
-//    @POST
-//    @Path("upload")
-//    @Produces(MediaType.APPLICATION_JSON)
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    public Mensagem uploadFile(UploadRequest request) throws IOException {
-//        return versaoService.upload(request);
-//    }
     @POST
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
@@ -53,8 +46,8 @@ public class UploaderResource {
     @Path("versao")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem gerarVersao() throws IOException {
-        return versaoService.gerarVersao();
+    public Mensagem gerarVersao(@HeaderParam("tipo") String tipo) throws IOException {
+        return versaoService.gerarVersao(tipo);
     }
 
     @GET

@@ -1,7 +1,13 @@
 const uploaderInput = document.getElementById('uploaderInput');
+const tipo = document.getElementById('tipo');
+const uploaderDiv = document.getElementById('uploaderDiv');
+const tipoDiv = document.getElementById('tipoDiv');
+
+
 const tabela = document.getElementById('versoes');
 const tabelaArquivos = document.getElementById('tabelaArquivos');
 const versaoButton = document.getElementById('versaoButton');
+const limparButton = document.getElementById('limparButton');
 const inputVersao = document.getElementById('inputVersao');
 const token = localStorage.getItem('acess-token');
 
@@ -19,9 +25,6 @@ const hideLoader = () => {
 };
 
 const messagem = (titulo, messagem, tipo = 'SUCCESS') => {
-
-
-
 
     const m = document.createElement('div');
     m.classList.add('alert');
@@ -51,7 +54,10 @@ const limparMessagem = () => {
 const selecionaVersao = (v) => {
     versao = v;
     inputVersao.value = v;
-    uploaderInput.classList.remove('d-none');
+    uploaderDiv.classList.remove('d-none');
+    tipoDiv.classList.add('d-none');
+    limparButton.classList.remove('d-none');
+    versaoButton.classList.add('d-none');
     listarArquivosVersao(v);
     document.getElementById('profile-tab').click();
 };
@@ -59,8 +65,11 @@ const selecionaVersao = (v) => {
 const deselecionaVersao = () => {
     versao = '';
     inputVersao.value = '';
-    uploaderInput.classList.add('d-none');
+    uploaderDiv.classList.add('d-none');
+    tipoDiv.classList.remove('d-none');
     tabelaArquivos.innerHTML = '';
+    limparButton.classList.add('d-none');
+    versaoButton.classList.remove('d-none');
 
 };
 
@@ -105,7 +114,7 @@ const publicar = (versao) => {
                 messagem('Error', 'Error', 'alert-danger');
                 return;
             }
-            messagem('ok', 'ok');
+            messagem('Sucesso!', 'Versão publicada com sucesso ' + versao);
             hideLoader();
         });
     }).catch((e) => {
@@ -169,15 +178,7 @@ const montaTabela = (versoes) => {
 
 };
 
-const arrayBufferToBase64 = (buffer) => {
-    let binary = '';
-    const bytes = new Uint8Array(buffer);
-    const len = bytes.byteLength;
-    for (let i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[ i ]);
-    }
-    return btoa(binary);
-};
+
 
 const error = (e) => {
     console.log(e);
@@ -187,11 +188,13 @@ const error = (e) => {
 
 const criarVersao = (e) => {
     showLoader();
+    console.log(tipo.value);
     const req = new Request(`uploader/versao`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'tipo': tipo.value
         }
     });
 
@@ -363,9 +366,17 @@ uploaderInput.addEventListener('input', (e) => {
 
 });
 
+const limpar = () => {
+    inputVersao.value = '';
+};
+
 versaoButton.addEventListener('click', criarVersao);
+
+limparButton.addEventListener('click', deselecionaVersao);
 
 getInfo();
 
 getVersoes();
+
+deselecionaVersao();
 

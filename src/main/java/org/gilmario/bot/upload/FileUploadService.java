@@ -12,7 +12,6 @@ import java.util.Map;
 import javax.inject.Singleton;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.io.IOUtils;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
