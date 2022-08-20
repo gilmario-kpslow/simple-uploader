@@ -79,20 +79,16 @@
 FROM maven:3.8.3-openjdk-17 as compile
 COPY . /app
 WORKDIR /app
-RUN ls
-RUN mvn clean package -DskipTests
+RUN --mount=type=cache,id=m2-cache,sharing=shared,target=/root/.m2 mvn clean package -DskipTests
 
+FROM openjdk:17
+ENV LANG='pt_BR.UTF-8' LANGUAGE='pt_BR:pt'
 
-FROM openjdk:16
-ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
-COPY --chown=185 --from=compile /app/target /deployments
-# We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 --from=compile /app/target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 --from=compile /app/target/quarkus-app/*.jar /deployments/
-COPY --chown=185 --from=compile /app/target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 --from=compile /app/target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=compile /app/target/quarkus-app/lib/ /deployments/lib/
+COPY --from=compile /app/target/quarkus-app/*.jar /deployments/
+COPY --from=compile /app/target/quarkus-app/app/ /deployments/app/
+COPY --from=compile /app/target/quarkus-app/quarkus/ /deployments/quarkus/
 EXPOSE 8080
-USER 185
 ENV AB_JOLOKIA_OFF=""
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
