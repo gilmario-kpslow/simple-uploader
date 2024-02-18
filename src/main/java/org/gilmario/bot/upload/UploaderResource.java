@@ -1,6 +1,5 @@
 package org.gilmario.bot.upload;
 
-import org.gilmario.bot.arquivo.PathObject;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -10,9 +9,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -22,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import org.gilmario.bot.Mensagem;
+import org.gilmario.bot.arquivo.PathObject;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -37,49 +35,32 @@ public class UploaderResource {
     @Path("upload")
     @Consumes(MediaType.MULTIPART_FORM_DATA)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response fileUpload(@MultipartForm MultipartFormDataInput input, @HeaderParam("versao") String versao) throws Exception {
+    public Response fileUpload(@MultipartForm MultipartFormDataInput input) throws Exception {
         return Response.ok().
-                entity(versaoService.upload(input, versao)).build();
+                entity(versaoService.upload(input)).build();
     }
 
     @GET
-    @Path("versao")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem gerarVersao(@HeaderParam("tipo") String tipo) throws IOException {
-        return versaoService.gerarVersao(tipo);
+    @Path("download")
+    @Produces(MediaType.APPLICATION_OCTET_STREAM)
+    public byte[] fileUpload(@QueryParam("filename") String fileName) throws Exception {
+        return versaoService.download(fileName);
     }
 
     @GET
-    @Path("versao/{versao}")
+    @Path("arquivos")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public List<PathObject> listarArquivosVersao(@PathParam("versao") String versao) throws IOException {
-        return versaoService.listarArquivosVersoes(versao);
+    public List<PathObject> listarArquivos() throws IOException {
+        return versaoService.listarArquivos();
     }
 
     @DELETE
-    @Path("versao/{versao}")
+    @Path("arquivo/{fileName}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem delete(@PathParam("versao") String versao) throws IOException {
-        return versaoService.deletarVersao(versao);
-    }
-
-    @DELETE
-    @Path("versao/{versao}/{fileName}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem deleteFile(@PathParam("versao") String versao, @PathParam("fileName") String fileName) throws IOException {
-        return versaoService.deletarArquivoVersao(versao, fileName);
-    }
-
-    @PUT
-    @Path("publicar/{versao}")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Mensagem publicar(@PathParam("versao") String versao) throws IOException {
-        return versaoService.publicarVersao(versao);
+    public Mensagem deleteFile(@PathParam("fileName") String fileName) throws IOException {
+        return versaoService.deletarArquivo(fileName);
     }
 
     @GET

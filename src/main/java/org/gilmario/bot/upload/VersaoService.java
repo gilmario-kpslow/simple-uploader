@@ -1,13 +1,10 @@
 package org.gilmario.bot.upload;
 
-import org.gilmario.bot.arquivo.PathObject;
 import io.quarkus.runtime.Startup;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -24,7 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.gilmario.bot.Mensagem;
-import org.gilmario.bot.TipoMessagem;
+import org.gilmario.bot.arquivo.PathObject;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -38,27 +35,22 @@ public class VersaoService {
 
     @ConfigProperty(name = "paths.base", defaultValue = "versoes")
     private String BASE;
-    @ConfigProperty(name = "paths.web", defaultValue = "web")
-    private String WEB;
-    @ConfigProperty(name = "paths.mobile", defaultValue = "mobile")
-    private String MOBILE;
     @Inject
     protected JsonWebToken jwt;
 
-    Mensagem upload(MultipartFormDataInput input, String versao) throws IOException {
+    Mensagem upload(MultipartFormDataInput input) throws IOException {
 
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-//        List<String> fileNames = new ArrayList<>();
+
         List<InputPart> inputParts = uploadForm.get("file");
-//        String fileName = null;
+
         for (InputPart inputPart : inputParts) {
             MultivaluedMap<String, String> header
                     = inputPart.getHeaders();
             String fileName = getFileName(header);
-//            fileNames.add(fileName);
             InputStream inputStream = inputPart.getBody(InputStream.class, null);
             byte[] bytes = IOUtils.toByteArray(inputStream);
-            Files.write(Paths.get(BASE, versao, fileName), bytes);
+            Files.write(Paths.get(BASE, fileName), bytes);
         }
         return new Mensagem("Upload realizado com sucesso");
     }
@@ -76,64 +68,19 @@ public class VersaoService {
         return "";
     }
 
-    public Mensagem gerarVersao(String tipo) throws IOException {
-        Long total = Files.list(Paths.get(BASE)).count();
-        String versao = ("Versao-" + (total + 1L) + "-" + tipo.toLowerCase());
-        Files.createDirectories(Paths.get(BASE, versao));
-        return new Mensagem("Upload realizado com sucesso", versao, TipoMessagem.SUCCESS);
-    }
-
-    public List<PathObject> listarArquivosVersoes(String versao) throws IOException {
-        return Files.list(Paths.get(BASE, versao)).map(f -> {
+    public List<PathObject> listarArquivos() throws IOException {
+        return Files.list(Paths.get(BASE)).map(f -> {
             PathObject list = new PathObject();
             list.setNome(f.getFileName().toString());
             list.setDiretorio(Files.isDirectory(f));
+            list.setTamanho(f.toFile().length());
             return list;
         }).toList();
     }
 
-    public Mensagem deletarVersao(String versao) throws IOException {
-        Files.list(Paths.get(BASE, versao)).forEach(f -> {
-            try {
-                Files.deleteIfExists(f);
-            } catch (IOException ex) {
-                Logger.getLogger(UploaderResource.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-        Files.delete(Paths.get(BASE, versao));
-        return new Mensagem("Versão excluída", "", TipoMessagem.SUCCESS);
-    }
-
-    public Mensagem deletarArquivoVersao(String versao, String fileName) throws IOException {
-        Files.delete(Paths.get(BASE, versao, fileName));
+    public Mensagem deletarArquivo(String fileName) throws IOException {
+        Files.delete(Paths.get(BASE, fileName));
         return new Mensagem("Arquivo excluído", "");
-    }
-
-    public Mensagem publicarVersao(String versao) throws IOException {
-
-        String publicar = versao.toLowerCase().contains("web") ? WEB : MOBILE;
-
-        Path fromPath = Paths.get(BASE, versao);
-        Path destPath = Paths.get(publicar);
-        Files.list(destPath).forEach(f -> {
-            try {
-                Files.deleteIfExists(f);
-            } catch (IOException ex) {
-                Logger.getLogger(UploaderResource.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-
-        Files.walk(fromPath).forEach(a -> {
-            Path b = Paths.get(publicar, a.toString().substring(fromPath.toString().length()));
-            try {
-                if (!a.toString().equals(fromPath.toString())) {
-                    Files.copy(a, b, StandardCopyOption.REPLACE_EXISTING);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
-        return new Mensagem("Publicado com sucesso");
     }
 
     public List<PathObject> listarArquivos(Optional<String> arvore) throws IOException {
@@ -174,6 +121,10 @@ public class VersaoService {
 
     private boolean hasJwt() {
         return jwt.getClaimNames() != null;
+    }
+
+    byte[] download(String fileName) throws IOException {
+        return Files.readAllBytes(Paths.get(BASE, fileName));
     }
 
 }

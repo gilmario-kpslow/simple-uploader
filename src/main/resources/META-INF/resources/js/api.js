@@ -1,18 +1,9 @@
 const uploaderInput = document.getElementById('uploaderInput');
-const tipo = document.getElementById('tipo');
 const uploaderDiv = document.getElementById('uploaderDiv');
 const tipoDiv = document.getElementById('tipoDiv');
 
-
-const tabela = document.getElementById('versoes');
 const tabelaArquivos = document.getElementById('tabelaArquivos');
-const versaoButton = document.getElementById('versaoButton');
-const limparButton = document.getElementById('limparButton');
-const inputVersao = document.getElementById('inputVersao');
 const token = localStorage.getItem('acess-token');
-
-let versao;
-let versoes = [];
 
 const showLoader = () => {
     const loader = document.getElementById('loader');
@@ -51,31 +42,9 @@ const limparMessagem = () => {
     contem.innerHTML = '';
 };
 
-const selecionaVersao = (v) => {
-    versao = v;
-    inputVersao.value = v;
-    uploaderDiv.classList.remove('d-none');
-    tipoDiv.classList.add('d-none');
-    limparButton.classList.remove('d-none');
-    versaoButton.classList.add('d-none');
-    listarArquivosVersao(v);
-    document.getElementById('profile-tab').click();
-};
-
-const deselecionaVersao = () => {
-    versao = '';
-    inputVersao.value = '';
-    uploaderDiv.classList.add('d-none');
-    tipoDiv.classList.remove('d-none');
-    tabelaArquivos.innerHTML = '';
-    limparButton.classList.add('d-none');
-    versaoButton.classList.remove('d-none');
-
-};
-
-const listarArquivosVersao = (versao) => {
+const listarArquivos = () => {
     showLoader();
-    const req = new Request(`uploader/versao/${versao}`, {
+    const req = new Request(`uploader/arquivos`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -89,38 +58,13 @@ const listarArquivosVersao = (versao) => {
                 messagem('Error', 'Error', 'alert-danger');
                 return;
             }
-            montarTabelaVersoes(d);
+            montarTabelaArquivos(d);
             hideLoader();
         });
     }).catch((e) => {
         error(e);
         hideLoader();
     });
-};
-
-const publicar = (versao) => {
-    showLoader();
-    const req = new Request(`uploader/publicar/${versao}`, {
-        method: 'PUT',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    });
-
-    fetch(req).then((resp) => {
-        resp.json().then(d => {
-            if (resp.status !== 200) {
-                messagem('Error', 'Error', 'alert-danger');
-                return;
-            }
-            messagem('Sucesso!', 'Versão publicada com sucesso ' + versao);
-            hideLoader();
-        });
-    }).catch((e) => {
-        error(e);
-    });
-    ;
 };
 
 const creatButtonAcao = (icone, title, acao) => {
@@ -134,7 +78,7 @@ const creatButtonAcao = (icone, title, acao) => {
     return btn;
 };
 
-const montarTabelaVersoes = (arq) => {
+const montarTabelaArquivos = (arq) => {
     tabelaArquivos.innerHTML = '';
     arq.forEach((v, i) => {
         const tr = document.createElement('tr');
@@ -146,39 +90,47 @@ const montarTabelaVersoes = (arq) => {
         tdNome.innerHTML = v.nome;
         tr.appendChild(tdNome);
 
-        const tdAcao = document.createElement('td');
+        const tdTamanho = document.createElement('td');
+        tdTamanho.innerHTML = v.tamanho;
+        tr.appendChild(tdTamanho);
 
-        tdAcao.appendChild(creatButtonAcao("fa-trash", "Excluir Versão", (e) => deleteArquivo(versao, v.nome)));
+        const tdAcao = document.createElement('td');
+        tdAcao.appendChild(creatButtonAcao('fa-download', 'Download', () => download(v.nome)));
+        tdAcao.appendChild(creatButtonAcao("fa-trash", "Excluir Versão", (e) => deleteArquivo(v.nome)));
         tr.appendChild(tdAcao);
         tabelaArquivos.appendChild(tr);
     });
 };
 
-const montaTabela = (versoes) => {
-    tabela.innerHTML = '';
-    versoes.forEach((v, i) => {
-        const tr = document.createElement('tr');
-        const tdId = document.createElement('td');
-        tdId.innerHTML = i + 1;
-        tr.appendChild(tdId);
-
-        const tdNome = document.createElement('td');
-        tdNome.innerHTML = v.nome;
-        tr.appendChild(tdNome);
-
-        const tdAcao = document.createElement('td');
-        const btnAcao = document.createElement('button');
-
-        tdAcao.appendChild(creatButtonAcao('fa-eye', 'Selecionar', () => selecionaVersao(v.nome)));
-        tdAcao.appendChild(creatButtonAcao("fa-trash", "Excluir Versão", (e) => deleteVersao(v.nome)));
-        tdAcao.appendChild(creatButtonAcao('fa-check', 'Publicar versão', () => publicar(v.nome)));
-        tr.appendChild(tdAcao);
-        tabela.appendChild(tr);
+const download = (finaName) => {
+    const req = new Request(`uploader/download?filename=${finaName}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+        }
     });
 
+    fetch(req).then((resp) => {
+        if (resp.status !== 200) {
+            messagem('Error', 'Error', 'alert-danger');
+            return;
+        }
+        resp.blob().then(d => {
+            var url = window.URL.createObjectURL(d);
+            var a = document.createElement('a');
+            a.href = url;
+            a.download = finaName;
+            document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+            a.click();
+            a.remove();
+
+        });
+    }).catch((e) => {
+        error(e);
+        hideLoader();
+    });
 };
-
-
 
 const error = (e) => {
     console.log(e);
@@ -186,37 +138,9 @@ const error = (e) => {
     messagem('ERRO', e, 'DANGER');
 };
 
-const criarVersao = (e) => {
+const deleteArquivo = (fileName) => {
     showLoader();
-    console.log(tipo.value);
-    const req = new Request(`uploader/versao`, {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            'tipo': tipo.value
-        }
-    });
-
-    fetch(req).then((resp) => {
-        resp.json().then(d => {
-            if (resp.status !== 200) {
-                messagem('Error', 'Error', 'alert-danger');
-                return;
-            }
-            selecionaVersao(d.resumo);
-            getVersoes();
-            hideLoader();
-        });
-    }).catch((e) => {
-        error(e);
-    });
-    ;
-};
-
-const deleteVersao = (versao) => {
-    showLoader();
-    const req = new Request(`uploader/versao/${versao}`, {
+    const req = new Request(`uploader/arquivo/${fileName}`, {
         method: 'DELETE',
         headers: {
             'Authorization': `Bearer ${token}`,
@@ -230,34 +154,7 @@ const deleteVersao = (versao) => {
                 messagem('Error', 'Error', 'alert-danger');
                 return;
             }
-            deselecionaVersao();
-            getVersoes();
-            messagem(d.tipo, d.detalhe);
-            hideLoader();
-        });
-    }).catch((e) => {
-        error(e);
-    });
-    ;
-};
-
-const deleteArquivo = (versao, fileName) => {
-    showLoader();
-    const req = new Request(`uploader/versao/${versao}/${fileName}`, {
-        method: 'DELETE',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    });
-
-    fetch(req).then((resp) => {
-        resp.json().then(d => {
-            if (resp.status !== 200) {
-                messagem('Error', 'Error', 'alert-danger');
-                return;
-            }
-            selecionaVersao(versao);
+            listarArquivos();
             messagem(d.tipo, d.detalhe);
             hideLoader();
         });
@@ -280,32 +177,6 @@ const compare = (a, b) => {
         return -1;
     }
 
-};
-
-const getVersoes = () => {
-    showLoader();
-    const req = new Request('uploader/listar', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        }
-    });
-
-    fetch(req).then((resp) => {
-        if (resp.status !== 200) {
-            messagem('Error', 'Error', 'alert-danger');
-            return;
-        }
-        resp.json().then(d => {
-            versoes = d;
-            versoes.sort(compare);
-            montaTabela(versoes);
-            hideLoader();
-        });
-    }).catch((e) => {
-        error(e);
-    });
 };
 
 const getInfo = () => {
@@ -345,8 +216,7 @@ uploaderInput.addEventListener('input', (e) => {
         const req = new Request('uploader/upload', {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'versao': versao
+                'Authorization': `Bearer ${token}`
             },
             body: data
         });
@@ -354,8 +224,8 @@ uploaderInput.addEventListener('input', (e) => {
             resp.json().then(d => {
                 messagem(d.detalhe, d.resumo, d.tipo);
                 hideLoader();
-                listarArquivosVersao(versao);
                 uploaderInput.value = '';
+                listarArquivos();
             }).catch((e) => {
                 error(e);
             });
@@ -366,17 +236,7 @@ uploaderInput.addEventListener('input', (e) => {
 
 });
 
-const limpar = () => {
-    inputVersao.value = '';
-};
-
-versaoButton.addEventListener('click', criarVersao);
-
-limparButton.addEventListener('click', deselecionaVersao);
-
 getInfo();
 
-getVersoes();
-
-deselecionaVersao();
+listarArquivos();
 

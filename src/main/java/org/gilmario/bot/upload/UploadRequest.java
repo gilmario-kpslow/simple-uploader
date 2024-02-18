@@ -6,17 +6,8 @@ package org.gilmario.bot.upload;
  */
 public class UploadRequest {
 
-    private String versao;
     private String nome;
     private String conteudo;
-
-    public String getVersao() {
-        return versao;
-    }
-
-    public void setVersao(String versao) {
-        this.versao = versao;
-    }
 
     public String getNome() {
         return nome;

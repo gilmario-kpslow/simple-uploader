@@ -28,78 +28,31 @@
             </div>
             <hr/>
             <div class="border rounded" style="min-height: 500px;">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane" type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">Versões</button>
-                    </li>
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane" type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">Nova Versão</button>
-                    </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Versão</th>
-                                            <th scope="col">Açoes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="versoes">
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                <div class="row p-3">
+                    <div class="col-md-6" id="uploaderDiv">
+                        <label class="label">Selecione um arquivo</label>
+                        <input type="file" class="form-control" multiple id="uploaderInput" name="name">
                     </div>
-                    <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
-                        <div class="row p-3">
-                            <div class="col-md">
-                                <label class="label">Versão</label>
-                                <div class="input-group mb-3">
-                                    <input type="text" id="inputVersao" class="form-control" readonly>
-                                    <button type="button" id="versaoButton" class="btn btn-primary">Nova</button>
-                                    <button type="button" id="limparButton" class="btn btn-primary">Limpar</button>
-                                </div>
-                            </div>
-                            <div class="col-md-2" id="tipoDiv">
-                                <label class="label">Selecione o tipo</label>
-                                <div class="input-group mb-3">
-                                    <select id="tipo" class="form-control">
-                                        <option value="WEB">WEB</option>
-                                        <option value="MOBILE">MOBILE</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-6 d-none" id="uploaderDiv">
-                                <label class="label">Selecione um arquivo</label>
-                                <input type="file" class="form-control" multiple id="uploaderInput" name="name">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col">#</th>
-                                            <th scope="col">Versão</th>
-                                            <th scope="col">Açoes</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="tabelaArquivos">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nome</th>
+                                    <th scope="col">Tamanho</th>
+                                    <th scope="col">Açoes</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabelaArquivos">
 
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-
         <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"  crossorigin="anonymous"></script>
         <script type="module" src="js/api.js"></script>
