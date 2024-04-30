@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.inject.Singleton;
@@ -26,17 +25,13 @@ public class FileUploadService {
 
     public String uploadFile(MultipartFormDataInput input) {
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
-        List<String> fileNames = new ArrayList<>();
         List<InputPart> inputParts = uploadForm.get("file");
-        String fileName = null;
         for (InputPart inputPart : inputParts) {
             try {
                 MultivaluedMap<String, String> header
                         = inputPart.getHeaders();
-                fileName = getFileName(header);
-                fileNames.add(fileName);
                 InputStream inputStream = inputPart.getBody(InputStream.class, null);
-                writeFile(inputStream, fileName);
+                writeFile(inputStream, getFileName(header));
             } catch (Exception e) {
                 e.printStackTrace();
             }
