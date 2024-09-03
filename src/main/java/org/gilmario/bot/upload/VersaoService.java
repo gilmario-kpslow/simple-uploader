@@ -33,7 +33,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @Startup
 public class VersaoService {
 
-    @ConfigProperty(name = "paths.base", defaultValue = "versoes")
+    @ConfigProperty(name = "paths.arquivo")
     private String BASE;
     @Inject
     protected JsonWebToken jwt;

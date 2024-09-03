@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.inject.Singleton;
 import javax.ws.rs.core.MultivaluedMap;
 import org.apache.commons.io.IOUtils;
@@ -21,6 +23,8 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @Singleton
 public class FileUploadService {
 
+    private static final Logger LOG = Logger.getLogger(FileUploadService.class.getName());
+
     String UPLOAD_DIR;
 
     public String uploadFile(MultipartFormDataInput input) {
@@ -33,7 +37,7 @@ public class FileUploadService {
                 InputStream inputStream = inputPart.getBody(InputStream.class, null);
                 writeFile(inputStream, getFileName(header));
             } catch (Exception e) {
-                e.printStackTrace();
+                LOG.log(Level.SEVERE, "Erro ao uploadFile", e);
             }
         }
         return "Files Successfully Uploaded";

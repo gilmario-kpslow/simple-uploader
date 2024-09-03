@@ -1,7 +1,5 @@
 #! /bin/bash
 
-docker login
+docker push registry.gilmariosoftware.com.br/uploader-api:latest
 
-docker push gilmariokpslow/uploader-api:latest
-
-docker push gilmariokpslow/uploader-api:v1.2.0
+docker push registry.gilmariosoftware.com.br/uploader-api:v1.2.0

@@ -22,10 +22,12 @@ import org.eclipse.microprofile.jwt.Claims;
 @Path("login")
 public class LoginResource {
 
-    @ConfigProperty(name = "login.username", defaultValue = "upadmin")
+    @ConfigProperty(name = "login.username")
     private String defaulUsername;
-    @ConfigProperty(name = "login.password", defaultValue = "123456789")
+    @ConfigProperty(name = "login.password")
     private String defaulPassword;
+    @ConfigProperty(name = "mp.jwt.verify.issuer")
+    private String issuer;
 
     @POST
     @Produces(value = MediaType.TEXT_PLAIN)
@@ -36,7 +38,7 @@ public class LoginResource {
             return Response.status(403).entity("Username OR Passsword is incorrect").build();
         }
 
-        return Response.status(200).entity(Jwt.issuer("http://localhost")
+        return Response.status(200).entity(Jwt.issuer(issuer)
                 .upn("jdoe@quarkus.io")
                 .groups(new HashSet<>(Arrays.asList("ADMIN")))
                 .claim(Claims.full_name.name(), "Admin")
