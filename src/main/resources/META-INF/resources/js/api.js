@@ -91,8 +91,12 @@ const montarTabelaArquivos = (arq) => {
         tr.appendChild(tdNome);
 
         const tdTamanho = document.createElement('td');
-        tdTamanho.innerHTML = v.tamanho;
+        tdTamanho.innerHTML = fileMask(v.tamanho);
         tr.appendChild(tdTamanho);
+
+        const tdModificado = document.createElement('td');
+        tdModificado.innerHTML = v.ultimaModificacao;
+        tr.appendChild(tdModificado);
 
         const tdAcao = document.createElement('td');
         tdAcao.appendChild(creatButtonAcao('fa-download', 'Download', () => download(v.nome)));
@@ -235,6 +239,20 @@ uploaderInput.addEventListener('input', (e) => {
     }
 
 });
+
+const fileMask = (tamanho) => {
+    if (tamanho > (1024 * 1024 * 1024)) {
+        return `${(tamanho / (1024 * 1024 * 1024)).toFixed(2)} Gb`;
+    }
+    if (tamanho > (1024 * 1024)) {
+        return `${(tamanho / (1024 * 1024)).toFixed(2)} Mb`;
+    }
+    if (tamanho > (1024)) {
+        return `${(tamanho / (1024)).toFixed(2)} Kb`;
+    }
+    return `${tamanho} bytes`;
+
+};
 
 getInfo();
 

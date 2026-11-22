@@ -1,5 +1,5 @@
 #! /bin/bash
 
-DOCKER_BUILDKIT=1 docker build -t registry.gilmariosoftware.com.br/uploader-api:v1.2.0 .
+docker build -t registry.gilmariosoftware.com.br/uploader-api:v1.2.1 .
 
-DOCKER_BUILDKIT=1 docker build -t registry.gilmariosoftware.com.br/uploader-api:latest .
+docker push registry.gilmariosoftware.com.br/uploader-api:v1.2.1

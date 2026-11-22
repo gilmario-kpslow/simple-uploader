@@ -1,7 +1,5 @@
 package org.gilmario.bot.arquivo;
 
-import java.time.LocalDateTime;
-
 /**
  *
  * @author gilmario
@@ -11,7 +9,7 @@ public class PathObject {
     private String nome;
     private Boolean diretorio;
     private Long tamanho;
-    private LocalDateTime ultimaModificacao;
+    private String ultimaModificacao;
 
     public String getNome() {
         return nome;
@@ -37,11 +35,15 @@ public class PathObject {
         this.tamanho = tamanho;
     }
 
-    public LocalDateTime getUltimaModificacao() {
+    public String getUltimaModificacao() {
         return ultimaModificacao;
     }
 
-    public void setUltimaModificacao(LocalDateTime ultimaModificacao) {
+    public String getUltimaModificacaoString() {
+        return ultimaModificacao;
+    }
+
+    public void setUltimaModificacao(String ultimaModificacao) {
         this.ultimaModificacao = ultimaModificacao;
     }
 

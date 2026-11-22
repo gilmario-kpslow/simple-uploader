@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -73,7 +75,13 @@ public class VersaoService {
             PathObject list = new PathObject();
             list.setNome(f.getFileName().toString());
             list.setDiretorio(Files.isDirectory(f));
-            list.setTamanho(f.toFile().length());
+            try {
+                BasicFileAttributeView basicView = Files.getFileAttributeView(f, BasicFileAttributeView.class);
+                list.setTamanho(basicView.readAttributes().size());
+                list.setUltimaModificacao(LocalDateTime.ofInstant(basicView.readAttributes().creationTime().toInstant(), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+            } catch (IOException ex) {
+                Logger.getLogger(VersaoService.class.getName()).log(Level.SEVERE, null, ex);
+            }
             return list;
         }).toList();
     }
@@ -89,8 +97,11 @@ public class VersaoService {
             list.setNome(f.getFileName().toString());
             list.setDiretorio(Files.isDirectory(f));
             try {
-                list.setTamanho(Files.size(f));
-                list.setUltimaModificacao(LocalDateTime.ofInstant(Files.getLastModifiedTime(f).toInstant(), ZoneId.systemDefault()));
+                BasicFileAttributeView basicView = Files.getFileAttributeView(f, BasicFileAttributeView.class);
+                list.setTamanho(basicView.readAttributes().size());
+
+                list.setUltimaModificacao(LocalDateTime.ofInstant(basicView.readAttributes().creationTime().toInstant(), ZoneId.systemDefault()).format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss")));
+
             } catch (IOException ex) {
                 Logger.getLogger(VersaoService.class.getName()).log(Level.SEVERE, null, ex);
             }

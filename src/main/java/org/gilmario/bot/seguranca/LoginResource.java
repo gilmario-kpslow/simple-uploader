@@ -39,7 +39,7 @@ public class LoginResource {
         }
 
         return Response.status(200).entity(Jwt.issuer(issuer)
-                .upn("jdoe@quarkus.io")
+                .upn("uploader@gilmariosoftware.com.br")
                 .groups(new HashSet<>(Arrays.asList("ADMIN")))
                 .claim(Claims.full_name.name(), "Admin")
                 .expiresIn(Duration.ofDays(1))
